@@ -7,9 +7,19 @@ import store   from './store'
 
 Vue.config.productionTip = false
 
+const ignoreWarnMessage = 'The .native modifier for v-on is only valid on components but it was used on <div>.'
+Vue.config.warnHandler = function (msg, vm, trace) {
+    if (msg === ignoreWarnMessage) {
+        // noinspection JSUnusedAssignment
+        msg = ''
+        // noinspection JSUnusedAssignment
+        trace = ''
+    }
+}
+
 new Vue({
-  router,
-  store,
-  vuetify,
-  render: h => h(App)
+    router,
+    store,
+    vuetify,
+    render: h => h(App)
 }).$mount('#app')
