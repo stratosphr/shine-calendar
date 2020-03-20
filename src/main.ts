@@ -9,11 +9,8 @@ Vue.config.productionTip = false
 
 const ignoreWarnMessage = 'The .native modifier for v-on is only valid on components but it was used on <div>.'
 Vue.config.warnHandler = function (msg, vm, trace) {
-    if (msg === ignoreWarnMessage) {
-        // noinspection JSUnusedAssignment
-        msg = ''
-        // noinspection JSUnusedAssignment
-        trace = ''
+    if (msg !== ignoreWarnMessage) {
+        console.error(msg, trace)
     }
 }
 
