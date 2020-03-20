@@ -1,9 +1,9 @@
 <template>
   <v-sheet height="300">
     <v-calendar
-        :end="end"
+        :end="end.format('YYYY-MM-DD')"
         :short-intervals="false"
-        :start="start"
+        :start="start.format('YYYY-MM-DD')"
         :weekdays="[1, 2, 3, 4, 5, 6]"
         locale="fr"
         ref="calendar"
@@ -26,10 +26,10 @@
 
 		computed: {
 			start() {
-				return moment('2020-03-20').startOf('week').format('YYYY-MM-DD')
+				return moment().startOf('week')
 			},
 			end() {
-				return moment('2020-03-23').endOf('week').format('YYYY-MM-DD')
+				return moment().endOf('week')
 			}
 		}
 
