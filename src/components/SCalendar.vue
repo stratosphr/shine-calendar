@@ -4,7 +4,16 @@
 
 <script>
 	export default {
-		name: 'SCalendar'
+		name: 'SCalendar',
+
+		created() {
+			console.clear()
+		},
+
+		mounted() {
+			console.log('Mounteds')
+		}
+
 	}
 </script>
 
