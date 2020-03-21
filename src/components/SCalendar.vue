@@ -15,6 +15,7 @@
           :short-intervals="false"
           :start="start.format('YYYY-MM-DD')"
           :weekdays="[1, 2, 3, 4, 5, 6]"
+          event-color="transparent"
           locale="fr"
           ref="calendar"
           type="week"
@@ -33,14 +34,42 @@
                   right: 0,
                   ...geometryForDate(event, moment(day.date))
                 }"
-                class="orange pa-1 overflow-auto s-calendar-event"
+                class="overflow-hidden"
                 v-for="event in optimizedEvents[day.date]"
             >
-              <slot
-                  name="event"
-                  v-bind:date="moment(day.date)"
-                  v-bind:event="event"
-              />
+              <!-- HEADER -->
+              <div
+                  :style="{
+              	    position: 'absolute',
+              	    left: 0,
+              	    right: 0,
+              	    height: `23px`,
+              	    'z-index': 1
+                  }"
+                  class="primary overflow-hidden elevation-2"
+              >
+                <slot
+                    name="event.header"
+                    v-bind:date="moment(day.date)"
+                    v-bind:event="event"
+                />
+              </div>
+              <!-- BODY -->
+              <div
+                  :style="{
+              	    position: 'relative',
+              	    top: '23px',
+              	    'z-index': 0
+                  }"
+                  class="overflow-y-auto purple fill-height s-calendar-event"
+              >
+                <slot
+                    name="event.body"
+                    style="border-radius: 10px !important;"
+                    v-bind:date="moment(day.date)"
+                    v-bind:event="event"
+                />
+              </div>
             </div>
           </div>
         </template>
@@ -155,7 +184,6 @@
   .s-calendar-event::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background-color: #F5F5F5;
-    border-radius: 7px;
   }
 
   /* Scrollbar */
@@ -166,7 +194,6 @@
 
   /* Handle */
   .s-calendar-event::-webkit-scrollbar-thumb {
-    border-radius: 7px;
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
     background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, rgb(123, 175, 239)), color-stop(1, rgb(78, 108, 198)));
   }

@@ -1,7 +1,13 @@
 <template>
   <s-calendar :events="events">
-    <template #event="{event, date}">
-      <div :class="event.color">
+    <template #event.header="{event, date}">
+      {{`${event.color} ${date.format('YYYY-MM-DD')}`}}
+    </template>
+    <template #event.body="{event, date}">
+      <div
+          :class="event.color"
+          class="px-1"
+      >
         <div>
           {{date.format('YYYY-MM-DD')}}
         </div>
@@ -34,7 +40,7 @@
 				{
 					start: moment('2020-03-16 00:30'),
 					end: moment('2020-03-16 02:15'),
-					color: 'blue'
+					color: 'green'
 				},
 				{
 					start: moment('2020-03-17 02:30'),
@@ -44,7 +50,7 @@
 				{
 					start: moment('2020-03-17 04:00'),
 					end: moment('2020-03-17 05:00'),
-					color: 'blue'
+					color: 'orange'
 				},
 				{
 					start: moment('2020-03-18 03:30'),
@@ -53,8 +59,8 @@
 				},
 				{
 					start: moment('2020-03-19 00:30'),
-					end: moment('2020-03-19 18:45'),
-					color: 'blue'
+					end: moment('2020-03-19 13:30'),
+					color: 'indigo'
 				}
 			]
 		})
