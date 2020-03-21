@@ -19,10 +19,11 @@
           ref="calendar"
           type="week"
       >
-        <template #event="{event, day}">
+        <template #event="{day}">
           <div
               class="text-wrap"
               style="position: relative"
+              v-if="$refs.calendar"
           >
             <!-- EVENTS -->
             <div
@@ -30,14 +31,15 @@
             	position: 'absolute',
             	left: 0,
             	right: 0,
-            	...geometry(e)
+            	...geometryForDate(event, moment(day.date))
                 }"
                 class="orange pa-2 overflow-hidden"
-                v-for="e in events"
+                v-for="event in optimizedEvents[day.date]"
             >
               <slot
                   name="event"
-                  v-bind:event="e"
+                  v-bind:date="moment(day.date)"
+                  v-bind:event="event"
               />
             </div>
           </div>
@@ -80,8 +82,8 @@
 		name: 'SCalendar',
 
 		data: () => ({
-			firstInterval: 0,
-			intervalMinutes: 60,
+			firstInterval: 3,
+			intervalMinutes: 30,
 			intervalCount: 24,
 			intervalHeight: 30
 		}),
@@ -109,17 +111,26 @@
 					start: day.format('YYYY-MM-DD 00:00'),
 					end: day.format('YYYY-MM-DD 24:00')
 				}))
+			},
+			optimizedEvents() {
+				return this.events.reduce((object, event) => ({
+					...object,
+					[event.start.format('YYYY-MM-DD')]: [...(object[event.start.format('YYYY-MM-DD')] || []), event]
+				}), {})
 			}
 		},
 
 		methods: {
-			geometry(event) {
-				const top = this.$refs.calendar ? this.$refs.calendar.timeToY(event.start.format('HH:mm')) : 0
-				const height = this.$refs.calendar ? this.$refs.calendar.timeToY(event.end.format('HH:mm')) - top : 0
+			geometryForDate(event) {
+				const top = this.$refs.calendar.timeToY(event.start.format('HH:mm'))
+				const height = this.$refs.calendar.timeToY(event.end.format('HH:mm')) - top
 				return {
 					top: `${top}px`,
 					height: `${height}px`
 				}
+			},
+			moment(stringMoment) {
+				return moment(stringMoment)
 			}
 		}
 
