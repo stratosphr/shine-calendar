@@ -32,7 +32,7 @@
                   position: 'absolute',
                   left: 0,
                   right: 0,
-                  ...geometryForDate(event, moment(day.date))
+                  ...geometry(event, moment(day.date))
                 }"
                 class="overflow-hidden"
                 v-for="event in optimizedEvents[day.date]"
@@ -144,7 +144,7 @@
 		},
 
 		methods: {
-			geometryForDate(event) {
+			geometry(event) {
 				const top = this.$refs.calendar.timeToY(event.start.format('HH:mm'))
 				const height = this.$refs.calendar.timeToY(event.end.format('HH:mm')) - top
 				return {
