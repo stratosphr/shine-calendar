@@ -15,6 +15,7 @@
           :short-intervals="false"
           :start="start.format('YYYY-MM-DD')"
           :weekdays="[1, 2, 3, 4, 5, 6]"
+          event-color="transparent"
           locale="fr"
           ref="calendar"
           type="week"
@@ -39,7 +40,8 @@
               <!-- HEADER -->
               <div
                   :style="{
-              	    height: `${intervalHeight / 1.5}px`
+              	    height: `${intervalHeight / 1.5}px`,
+                    cursor: draggableEvents ? (dragging ? 'grabbing' : 'grab') : 'default'
                   }"
                   class="primary overflow-hidden"
               >
@@ -101,10 +103,15 @@
 			firstInterval: 3,
 			intervalMinutes: 30,
 			intervalCount: 24,
-			intervalHeight: 30
+			intervalHeight: 30,
+			dragging: false
 		}),
 
 		props: {
+			draggableEvents: {
+				type: Boolean,
+				default: true
+			},
 			events: {
 				type: Array,
 				default: () => ([])
