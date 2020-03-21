@@ -1,14 +1,14 @@
-import Vue       from 'vue'
-import VueRouter from 'vue-router'
-import SCalendar from '../components/SCalendar.vue'
+import Vue            from 'vue'
+import VueRouter      from 'vue-router'
+import CustomCalendar from '../components/CustomCalendar.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
     {
         path: '/',
-        name: 'SCalendar',
-        component: SCalendar
+        name: 'custom-calendar',
+        component: CustomCalendar
     }
 ]
 

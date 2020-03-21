@@ -20,6 +20,7 @@
           type="week"
       >
         <template #event="{event, day}">
+          <slot name="event" />
           <div class="text-wrap">
             <div>
               {{`Start: ${event.start}`}}
