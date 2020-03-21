@@ -6,7 +6,7 @@
     <template #event.body="{event, date}">
       <div
           :class="event.color"
-          class="px-1"
+          class="px-1 fill-height"
       >
         <div>
           {{date.format('YYYY-MM-DD')}}
@@ -44,7 +44,7 @@
 				},
 				{
 					start: moment('2020-03-17 02:30'),
-					end: moment('2020-03-17 03:50'),
+					end: moment('2020-03-17 03:30'),
 					color: 'blue'
 				},
 				{

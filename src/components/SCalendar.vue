@@ -15,14 +15,13 @@
           :short-intervals="false"
           :start="start.format('YYYY-MM-DD')"
           :weekdays="[1, 2, 3, 4, 5, 6]"
-          event-color="transparent"
           locale="fr"
           ref="calendar"
           type="week"
       >
         <template #event="{day}">
           <div
-              class="text-wrap s-calendar"
+              class="text-wrap"
               style="position: relative"
               v-if="$refs.calendar"
           >
@@ -40,13 +39,9 @@
               <!-- HEADER -->
               <div
                   :style="{
-              	    position: 'absolute',
-              	    left: 0,
-              	    right: 0,
-              	    height: `23px`,
-              	    'z-index': 1
+              	    height: `${intervalHeight / 1.5}px`
                   }"
-                  class="primary overflow-hidden elevation-2"
+                  class="primary overflow-hidden"
               >
                 <slot
                     name="event.header"
@@ -55,17 +50,9 @@
                 />
               </div>
               <!-- BODY -->
-              <div
-                  :style="{
-              	    position: 'relative',
-              	    top: '23px',
-              	    'z-index': 0
-                  }"
-                  class="overflow-y-auto purple fill-height s-calendar-event"
-              >
+              <div class="purple fill-height">
                 <slot
                     name="event.body"
-                    style="border-radius: 10px !important;"
                     v-bind:date="moment(day.date)"
                     v-bind:event="event"
                 />
@@ -178,29 +165,5 @@
     border: 0 solid !important;
     cursor: default !important;
     border-radius: 0 !important;
-  }
-
-  /* Track */
-  .s-calendar-event::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    background-color: #F5F5F5;
-  }
-
-  /* Scrollbar */
-  .s-calendar-event::-webkit-scrollbar {
-    width: 7px;
-    background-color: transparent;
-  }
-
-  /* Handle */
-  .s-calendar-event::-webkit-scrollbar-thumb {
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
-    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, rgb(123, 175, 239)), color-stop(1, rgb(78, 108, 198)));
-  }
-
-  /* Handle on hover */
-  .s-calendar-event::-webkit-scrollbar-thumb:hover {
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .5);
-    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, rgb(123, 175, 239)), color-stop(1, rgb(78, 108, 198)));
   }
 </style>
