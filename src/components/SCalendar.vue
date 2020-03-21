@@ -39,13 +39,13 @@
                 class="overflow-hidden"
                 v-for="event in optimizedEvents[day.date]"
             >
-              <v-fade-transition>
-                <div>
+              <v-fade-transition appear>
+                <div class="fill-height">
                   <!-- HEADER -->
                   <div
                       :style="{
                         height: `${intervalHeight / 1.5}px`,
-                        cursor: draggableEvents ? (dragging ? 'grabbing' : 'grab') : 'default'
+                        cursor: `${draggableEvents ? (dragging ? 'grabbing' : 'grab') : 'default'}`
                       }"
                       @mousedown="notifyDragStart(event)"
                       class="primary overflow-hidden"
@@ -76,7 +76,7 @@
             	    right: 0,
             	    top: `${(interval - 1) * intervalHeight}px`,
             	    height: `${intervalHeight}px`,
-            	    cursor: dragging ? 'grabbing' : 'default',
+            	    cursor: `${dragging ? 'grabbing' : 'default'}`,
             	    opacity: 0.4
                 }"
                 @mouseenter="notifyDropEntered(moment(day.date), interval - 1)"
@@ -189,18 +189,16 @@
 			notifyDropEntered(date, interval) {
 				if (this.dragging) {
 					const time = moment.duration({minutes: interval * this.intervalMinutes + this.firstInterval * this.intervalMinutes})
-					console.log(date.format('YYYY-MM-DD'), {
-						hours: time.hours(),
-						minutes: time.minutes()
-					})
 					const duration = moment.duration(this.selectedEvents[0].end.diff(this.selectedEvents[0].start))
 					this.selectedEvents[0].start = moment(date).add(time)
 					this.selectedEvents[0].end = moment(this.selectedEvents[0].start).add(duration)
 				}
 			},
 			notifyDrop(date, interval) {
-				this.dragging = false
-				this.selectedEvents = []
+				if (this.dragging) {
+					this.dragging = false
+					this.selectedEvents = []
+				}
 			},
 			addSelectedEvent(event) {
 				this.selectedEvents = [...this.selectedEvents.filter(e => !moment.range(e.start, e.end).isSame(moment.range(event.start, event.end))), event]
