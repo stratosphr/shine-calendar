@@ -20,14 +20,25 @@
           type="week"
       >
         <template #event="{event, day}">
-          <slot name="event" />
-          <div class="text-wrap">
-            <div>
-              {{`Start: ${event.start}`}}
-              {{`End: ${event.end}`}}
-            </div>
-            <div>
-              {{`Date: ${day.date}`}}
+          <div
+              class="text-wrap"
+              style="position: relative"
+          >
+            <!-- EVENTS -->
+            <div
+                :style="{
+            	position: 'absolute',
+            	left: 0,
+            	right: 0,
+            	...geometry(e)
+                }"
+                class="orange pa-2 overflow-hidden"
+                v-for="e in events"
+            >
+              <slot
+                  name="event"
+                  v-bind:event="e"
+              />
             </div>
           </div>
         </template>
@@ -75,6 +86,13 @@
 			intervalHeight: 30
 		}),
 
+		props: {
+			events: {
+				type: Array,
+				default: []
+			}
+		},
+
 		created() {
 			console.clear()
 		},
@@ -91,6 +109,17 @@
 					start: day.format('YYYY-MM-DD 00:00'),
 					end: day.format('YYYY-MM-DD 24:00')
 				}))
+			}
+		},
+
+		methods: {
+			geometry(event) {
+				const top = this.$refs.calendar ? this.$refs.calendar.timeToY(event.start.format('HH:mm')) : 0
+				const height = this.$refs.calendar ? this.$refs.calendar.timeToY(event.end.format('HH:mm')) - top : 0
+				return {
+					top: `${top}px`,
+					height: `${height}px`
+				}
 			}
 		}
 
