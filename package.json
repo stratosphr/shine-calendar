@@ -10,6 +10,7 @@
   "dependencies": {
     "core-js": "^3.6.4",
     "moment": "^2.24.0",
+    "moment-range": "^4.0.2",
     "register-service-worker": "^1.6.2",
     "roboto-fontface": "*",
     "vue": "^2.6.11",
