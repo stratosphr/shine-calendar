@@ -53,13 +53,13 @@
                       cursor: 'row-resize'
                     }"
                     @mousedown="notifyResizeStart(event, 'top')"
-                    v-if="resizableEvents"
+                    v-if="resizableEvents && !event.locked"
                 />
                 <!-- HEADER -->
                 <div
                     :style="{
                       height: `${headerHeight}px`,
-                      cursor: `${draggableEvents ? (dragging ? 'grabbing' : 'grab') : 'default'}`
+                      cursor: `${draggableEvents ? (dragging ? 'grabbing' : (event.locked ? 'not-allowed' : 'grab')) : 'default'}`
                     }"
                     @mousedown="notifyDragStart(event)"
                     class="overflow-hidden s-calendar-event-header"
@@ -118,7 +118,7 @@
                       cursor: 'row-resize'
                     }"
                     @mousedown="notifyResizeStart(event, 'bottom')"
-                    v-if="resizableEvents"
+                    v-if="resizableEvents && !event.locked"
                 />
               </div>
             </div>
@@ -266,7 +266,7 @@
 				}
 			},
 			notifyDragStart(event) {
-				if (this.draggableEvents) {
+				if (this.draggableEvents && !event.locked) {
 					this.dragging = true
 					this.addSelectedEvent(event)
 				}
