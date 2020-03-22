@@ -1,9 +1,9 @@
 <template>
   <s-calendar
-      :first-events="events"
-      :resizable-events="true"
       :draggable-events="true"
+      :first-events="events"
       :removable-events="true"
+      :resizable-events="true"
   >
     <template #event.header="{event, date}">
       <div
@@ -77,6 +77,11 @@
 					start: moment('2020-03-19 00:30'),
 					end: moment('2020-03-19 13:30'),
 					color: 'indigo'
+				},
+				{
+					start: moment('2020-03-20 02:00'),
+					end: moment('2020-03-20 09:00'),
+					color: 'grey'
 				}
 			]
 		})

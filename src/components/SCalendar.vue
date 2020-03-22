@@ -84,9 +84,10 @@
                           v-for="(eventControl, eventIndex) in eventControls"
                       >
                         <v-icon
+                            :color="eventControl.color(event)"
                             :size="headerHeight"
                             @click="eventControl.handler(event)"
-                            v-text="eventControl.icon"
+                            v-text="eventControl.icon(event)"
                         />
                       </v-col>
                     </v-row>
@@ -237,7 +238,15 @@
 			eventControls() {
 				return [
 					{
-						icon: 'mdi-close',
+						icon: (event) => event.locked ? 'mdi-lock' : 'mdi-lock-open',
+						color: (event) => event.locked ? 'error' : 'success',
+						handler: (event) => {
+							this.notifyLockClicked(event)
+						}
+					},
+					{
+						icon: () => 'mdi-close',
+						color: () => 'gray',
 						handler: (event) => {
 							this.notifyRemoveClicked(event)
 						}
@@ -270,6 +279,10 @@
 					handler
 				}
 				this.addSelectedEvent(event)
+			},
+			notifyLockClicked(event) {
+				this.$set(event, 'locked', !event.locked)
+				console.log(event)
 			},
 			notifyRemoveClicked(event) {
 				this.events = this.cloneEvents(this.events.filter(e => !moment.range(e.start, e.end).isSame(event)))
