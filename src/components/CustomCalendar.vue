@@ -7,10 +7,16 @@
   >
     <template #event.header="{event, date}">
       <div
-          :class="[`${event.color}`, 'px-1', 'lighten-1']"
+          :class="[
+          		`${event.color}`,
+          		'px-1',
+          		'lighten-1',
+          		'font-weight-bold'
+          ]"
           :style="{
       	    borderTopLeftRadius: '4px',
-      	    borderTopRightRadius: '4px'
+      	    borderTopRightRadius: '4px',
+      	    fontSize: '0.8em'
           }"
       >
         {{`${event.color} ${date.format('YYYY-MM-DD')}`}}
