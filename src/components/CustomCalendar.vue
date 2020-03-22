@@ -60,34 +60,34 @@
 		data: () => ({
 			events: [
 				{
-					start: moment('2020-03-16 01:30'),
-					end: moment('2020-03-16 03:15'),
+					start: moment('2020-03-23 01:30'),
+					end: moment('2020-03-23 03:15'),
 					color: 'green'
 				},
 				{
-					start: moment('2020-03-17 02:30'),
-					end: moment('2020-03-17 03:30'),
+					start: moment('2020-03-24 02:30'),
+					end: moment('2020-03-24 03:30'),
 					color: 'blue'
 				},
 				{
-					start: moment('2020-03-17 04:00'),
-					end: moment('2020-03-17 05:00'),
+					start: moment('2020-03-24 04:00'),
+					end: moment('2020-03-24 05:00'),
 					color: 'orange'
 				},
 				{
-					start: moment('2020-03-18 03:30'),
-					end: moment('2020-03-18 05:00'),
+					start: moment('2020-03-25 03:30'),
+					end: moment('2020-03-25 05:00'),
 					color: 'red'
 				},
 				{
-					start: moment('2020-03-19 00:30'),
-					end: moment('2020-03-19 13:30'),
+					start: moment('2020-03-26 00:30'),
+					end: moment('2020-03-26 13:30'),
 					color: 'indigo',
 					locked: true
 				},
 				{
-					start: moment('2020-03-20 02:00'),
-					end: moment('2020-03-20 09:00'),
+					start: moment('2020-03-27 02:00'),
+					end: moment('2020-03-27 09:00'),
 					color: 'grey',
 					locked: true
 				}
