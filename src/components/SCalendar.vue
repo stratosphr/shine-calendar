@@ -36,7 +36,7 @@
                   zIndex: dragging ? 0 : 1,
                   borderLeft: 'solid white thin',
                   borderRight: 'solid white thin',
-                  ...geometry(event, moment(day.date))
+                  ...geometry(event)
                 }"
                 class="overflow-hidden"
                 v-for="event in optimizedEvents[day.date]"
@@ -49,7 +49,7 @@
                         cursor: `${draggableEvents ? (dragging ? 'grabbing' : 'grab') : 'default'}`
                       }"
                     @mousedown="notifyDragStart(event)"
-                    class="primary overflow-hidden"
+                    class="overflow-hidden s-calendar-event-header"
                 >
                   <slot
                       name="event.header"
@@ -58,7 +58,12 @@
                   />
                 </div>
                 <!-- BODY -->
-                <div class="fill-height s-calendar-event-body">
+                <div
+                    :style="{
+                	    height: `${geometry(event).height.replace('px', '') - intervalHeight / 1.5}px`,
+                    }"
+                    class="s-calendar-event-body"
+                >
                   <slot
                       name="event.body"
                       v-bind:date="moment(day.date)"
@@ -224,6 +229,10 @@
   }
 
   .s-calendar-event-body > * {
+    height: 100% !important;
+  }
+
+  .s-calendar-event-header > * {
     height: 100% !important;
   }
 </style>
