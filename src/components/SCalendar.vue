@@ -72,8 +72,8 @@
                   <div
                       :style="{
                         position: 'absolute',
-                        bottom: 0,
                         right: 0,
+                        bottom: headerHeight < 18 ? (headerHeight < 13 ? (headerHeight < 10 ? '6px' : '4px') : '2px') : 0,
                         cursor: 'default'
                       }"
                       @mousedown.stop
@@ -85,7 +85,7 @@
                       >
                         <v-icon
                             :color="eventControl.color(event)"
-                            :size="headerHeight"
+                            :size="headerHeight - 2"
                             @click="eventControl.handler(event)"
                             v-text="eventControl.icon(event)"
                         />
