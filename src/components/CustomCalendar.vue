@@ -1,7 +1,9 @@
 <template>
   <s-calendar
-      :events="events"
+      :first-events="events"
       :resizable-events="true"
+      :draggable-events="true"
+      :removable-events="true"
   >
     <template #event.header="{event, date}">
       <div

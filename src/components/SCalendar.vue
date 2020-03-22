@@ -49,7 +49,7 @@
                       top: 0,
                       left: 0,
                       right: 0,
-                      height: `${(intervalHeight - intervalHeight / 1.5) / 2}px`,
+                      height: `${(intervalHeight - headerHeight) / 2}px`,
                       cursor: 'row-resize'
                     }"
                     @mousedown="notifyResizeStart(event, 'top')"
@@ -58,9 +58,9 @@
                 <!-- HEADER -->
                 <div
                     :style="{
-                        height: `${intervalHeight / 1.5}px`,
-                        cursor: `${draggableEvents ? (dragging ? 'grabbing' : 'grab') : 'default'}`
-                      }"
+                      height: `${headerHeight}px`,
+                      cursor: `${draggableEvents ? (dragging ? 'grabbing' : 'grab') : 'default'}`
+                    }"
                     @mousedown="notifyDragStart(event)"
                     class="overflow-hidden s-calendar-event-header"
                 >
@@ -69,11 +69,33 @@
                       v-bind:date="moment(day.date)"
                       v-bind:event="event"
                   />
+                  <div
+                      :style="{
+                        position: 'absolute',
+                        bottom: 0,
+                        right: 0,
+                        cursor: 'default'
+                      }"
+                      @mousedown.stop
+                  >
+                    <v-row no-gutters>
+                      <v-col
+                          :key="eventIndex"
+                          v-for="(eventControl, eventIndex) in eventControls"
+                      >
+                        <v-icon
+                            :size="headerHeight"
+                            @click="eventControl.handler(event)"
+                            v-text="eventControl.icon"
+                        />
+                      </v-col>
+                    </v-row>
+                  </div>
                 </div>
                 <!-- BODY -->
                 <div
                     :style="{
-                	    height: `${geometry(event).height.replace('px', '') - intervalHeight / 1.5}px`,
+                	    height: `${geometry(event).height.replace('px', '') - headerHeight}px`,
                     }"
                     class="s-calendar-event-body"
                 >
@@ -90,7 +112,7 @@
                       bottom: 0,
                       left: 0,
                       right: 0,
-                      height: `${(intervalHeight - intervalHeight / 1.5) / 2}px`,
+                      height: `${(intervalHeight - headerHeight) / 2}px`,
                       cursor: 'row-resize'
                     }"
                     @mousedown="notifyResizeStart(event, 'bottom')"
@@ -156,12 +178,13 @@
 			firstInterval: 3,
 			intervalMinutes: 30,
 			intervalCount: 24,
-			intervalHeight: 30,
+			intervalHeight: 20,
 			dragging: false,
 			resizing: {
 				status: false,
 				handler: null
 			},
+			events: [],
 			selectedEvents: []
 		}),
 
@@ -174,7 +197,11 @@
 				type: Boolean,
 				default: true
 			},
-			events: {
+			removableEvents: {
+				type: Boolean,
+				default: true
+			},
+			firstEvents: {
 				type: Array,
 				default: () => ([])
 			}
@@ -182,6 +209,7 @@
 
 		created() {
 			console.clear()
+			this.events = [...this.firstEvents]
 		},
 
 		computed: {
@@ -190,6 +218,9 @@
 			},
 			end() {
 				return moment().endOf('week')
+			},
+			headerHeight() {
+				return this.intervalHeight / 1.5
 			},
 			eventsContainers() {
 				return [...moment.range(this.start, this.end).by('day')].map(day => ({
@@ -202,6 +233,16 @@
 					...object,
 					[event.start.format('YYYY-MM-DD')]: [...(object[event.start.format('YYYY-MM-DD')] || []), event]
 				}), {})
+			},
+			eventControls() {
+				return [
+					{
+						icon: 'mdi-close',
+						handler: (event) => {
+							this.notifyRemoveClicked(event)
+						}
+					}
+				]
 			}
 		},
 
@@ -230,6 +271,10 @@
 				}
 				this.addSelectedEvent(event)
 			},
+			notifyRemoveClicked(event) {
+				this.events = this.cloneEvents(this.events.filter(e => !moment.range(e.start, e.end).isSame(event)))
+				this.selectedEvents = []
+			},
 			notifyDropEntered(date, interval) {
 				if (this.dragging || this.resizing.status) {
 					let start, end
@@ -247,7 +292,7 @@
 					}
 				}
 			},
-			notifyDrop(date, interval) {
+			notifyDrop() {
 				if (this.dragging) {
 					this.dragging = false
 				} else if (this.resizing.status) {
@@ -261,6 +306,13 @@
 			},
 			moment(stringMoment) {
 				return moment(stringMoment)
+			},
+			cloneEvents(events) {
+				return events.map(event => ({
+					...event,
+					start: moment(event.start),
+					end: moment(event.end)
+				}))
 			}
 		}
 
