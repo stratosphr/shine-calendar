@@ -76,12 +76,14 @@
 				{
 					start: moment('2020-03-19 00:30'),
 					end: moment('2020-03-19 13:30'),
-					color: 'indigo'
+					color: 'indigo',
+					locked: true
 				},
 				{
 					start: moment('2020-03-20 02:00'),
 					end: moment('2020-03-20 09:00'),
-					color: 'grey'
+					color: 'grey',
+					locked: true
 				}
 			]
 		})
