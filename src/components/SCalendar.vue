@@ -283,7 +283,6 @@
 			},
 			notifyLockClicked(event) {
 				this.$set(event, 'locked', !event.locked)
-				console.log(event)
 			},
 			notifyRemoveClicked(event) {
 				this.events = this.cloneEvents(this.events.filter(e => !moment.range(e.start, e.end).isSame(event)))
