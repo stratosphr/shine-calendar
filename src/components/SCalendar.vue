@@ -2,7 +2,7 @@
   <div>
     <v-sheet
         @mouseleave="notifyDragCancel()"
-        height="300"
+        height="500"
         style="user-select: none"
     >
       <v-calendar
@@ -34,57 +34,55 @@
                   left: 0,
                   right: 0,
                   zIndex: dragging ? 0 : 1,
+                  borderLeft: 'solid white thin',
+                  borderRight: 'solid white thin',
                   ...geometry(event, moment(day.date))
                 }"
                 class="overflow-hidden"
                 v-for="event in optimizedEvents[day.date]"
             >
-              <v-fade-transition appear>
-                <div class="fill-height">
-                  <!-- HEADER -->
-                  <div
-                      :style="{
+              <div class="fill-height">
+                <!-- HEADER -->
+                <div
+                    :style="{
                         height: `${intervalHeight / 1.5}px`,
                         cursor: `${draggableEvents ? (dragging ? 'grabbing' : 'grab') : 'default'}`
                       }"
-                      @mousedown="notifyDragStart(event)"
-                      class="primary overflow-hidden"
-                  >
-                    <slot
-                        name="event.header"
-                        v-bind:date="moment(day.date)"
-                        v-bind:event="event"
-                    />
-                  </div>
-                  <!-- BODY -->
-                  <div class="purple fill-height">
-                    <slot
-                        name="event.body"
-                        v-bind:date="moment(day.date)"
-                        v-bind:event="event"
-                    />
-                  </div>
+                    @mousedown="notifyDragStart(event)"
+                    class="primary overflow-hidden"
+                >
+                  <slot
+                      name="event.header"
+                      v-bind:date="moment(day.date)"
+                      v-bind:event="event"
+                  />
                 </div>
-              </v-fade-transition>
+                <!-- BODY -->
+                <div class="fill-height s-calendar-event-body">
+                  <slot
+                      name="event.body"
+                      v-bind:date="moment(day.date)"
+                      v-bind:event="event"
+                  />
+                </div>
+              </div>
             </div>
+          </div>
 
-            <!-- DROPS -->
-            <div
-                :style="{
+          <!-- DROPS -->
+          <div
+              :style="{
             	    position: 'absolute',
             	    left: 0,
             	    right: 0,
             	    top: `${(interval - 1) * intervalHeight}px`,
             	    height: `${intervalHeight}px`,
             	    cursor: `${dragging ? 'grabbing' : 'default'}`,
-            	    opacity: 0.4
                 }"
-                @mouseenter="notifyDropEntered(moment(day.date), interval - 1)"
-                @mouseup="notifyDrop(moment(day.date), interval - 1)"
-                class="blue"
-                v-for="interval in intervalCount"
-            />
-          </div>
+              @mouseenter="notifyDropEntered(moment(day.date), interval - 1)"
+              @mouseup="notifyDrop(moment(day.date), interval - 1)"
+              v-for="interval in intervalCount"
+          />
         </template>
       </v-calendar>
     </v-sheet>
@@ -170,8 +168,8 @@
 
 		methods: {
 			geometry(event) {
-				const top = this.$refs.calendar.timeToY(event.start.format('HH:mm'))
-				const height = this.$refs.calendar.timeToY(event.end.format('HH:mm')) - top
+				const top = this.$refs.calendar.timeToY(event.start.format('HH:mm')) + 1
+				const height = this.$refs.calendar.timeToY(event.end.format('HH:mm')) - top - 1
 				return {
 					top: `${top}px`,
 					height: `${height}px`
@@ -223,5 +221,9 @@
     border: 0 solid !important;
     cursor: default !important;
     border-radius: 0 !important;
+  }
+
+  .s-calendar-event-body > * {
+    height: 100% !important;
   }
 </style>
