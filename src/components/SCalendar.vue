@@ -222,7 +222,7 @@
 				return moment().endOf('week')
 			},
 			headerHeight() {
-				return this.intervalHeight / 1.5
+				return Math.min(22, this.intervalHeight / 1.5)
 			},
 			eventsContainers() {
 				return [...moment.range(this.start, this.end).by('day')].map(day => ({
