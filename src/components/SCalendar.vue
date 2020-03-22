@@ -49,7 +49,7 @@
                       top: 0,
                       left: 0,
                       right: 0,
-                      height: `${(intervalHeight - headerHeight) / 2}px`,
+                      height: `${resizerHeight}px`,
                       cursor: 'row-resize'
                     }"
                     @mousedown="notifyResizeStart(event, 'top')"
@@ -114,7 +114,7 @@
                       bottom: 0,
                       left: 0,
                       right: 0,
-                      height: `${(intervalHeight - headerHeight) / 2}px`,
+                      height: `${resizerHeight}px`,
                       cursor: 'row-resize'
                     }"
                     @mousedown="notifyResizeStart(event, 'bottom')"
@@ -220,6 +220,9 @@
 			},
 			end() {
 				return moment().endOf('week')
+			},
+			resizerHeight() {
+				return this.headerHeight / 2.5
 			},
 			headerHeight() {
 				return Math.min(22, this.intervalHeight / 1.5)
