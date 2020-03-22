@@ -36,6 +36,7 @@
                   zIndex: (dragging || resizing.status) ? 0 : 1,
                   borderLeft: 'solid white thin',
                   borderRight: 'solid white thin',
+                  opacity: (dragging || resizing.status) ? ghostsOpacity : 1,
                   ...geometry(event)
                 }"
                 class="overflow-hidden"
@@ -97,7 +98,7 @@
                 <!-- BODY -->
                 <div
                     :style="{
-                	    height: `${geometry(event).height.replace('px', '') - headerHeight}px`,
+                	    height: `${geometry(event).height.replace('px', '') - headerHeight}px`
                     }"
                     class="s-calendar-event-body"
                 >
@@ -202,6 +203,10 @@
 			removableEvents: {
 				type: Boolean,
 				default: true
+			},
+			ghostsOpacity: {
+				type: Number,
+				default: 0.4
 			},
 			firstEvents: {
 				type: Array,
