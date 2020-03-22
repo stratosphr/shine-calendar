@@ -285,7 +285,9 @@
 				this.$set(event, 'locked', !event.locked)
 			},
 			notifyRemoveClicked(event) {
-				this.events = this.cloneEvents(this.events.filter(e => !moment.range(e.start, e.end).isSame(event)))
+				if (!event.locked) {
+					this.events = this.cloneEvents(this.events.filter(e => !moment.range(e.start, e.end).isSame(event)))
+				}
 				this.selectedEvents = []
 			},
 			notifyDropEntered(date, interval) {
