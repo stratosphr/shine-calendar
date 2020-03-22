@@ -33,10 +33,10 @@
                   position: 'absolute',
                   left: 0,
                   right: 0,
-                  zIndex: (dragging || resizing.status) ? 0 : 1,
+                  zIndex: shouldDisplayGhosts ? 0 : 1,
                   borderLeft: 'solid white thin',
                   borderRight: 'solid white thin',
-                  opacity: (dragging || resizing.status) ? ghostsOpacity : 1,
+                  opacity: shouldDisplayGhosts ? ghostsOpacity : 1,
                   ...geometry(event)
                 }"
                 class="overflow-hidden"
@@ -261,6 +261,9 @@
 						}
 					}
 				]
+			},
+			shouldDisplayGhosts() {
+				return this.dragging || this.resizing.status
 			}
 		},
 
@@ -299,7 +302,7 @@
 				this.selectedEvents = []
 			},
 			notifyDropEntered(date, interval) {
-				if (this.dragging || this.resizing.status) {
+				if (this.shouldDisplayGhosts) {
 					let start, end
 					const time = moment.duration({minutes: interval * this.intervalMinutes + this.firstInterval * this.intervalMinutes})
 					if (this.dragging) {
