@@ -168,7 +168,7 @@
 
 		methods: {
 			geometry(event) {
-				const top = this.$refs.calendar.timeToY(event.start.format('HH:mm')) + 1
+				const top = this.$refs.calendar.timeToY(event.start.format('HH:mm')) + 2
 				const height = this.$refs.calendar.timeToY(event.end.format('HH:mm')) - top - 1
 				return {
 					top: `${top}px`,
