@@ -84,7 +84,8 @@
                           v-for="(eventControl, eventIndex) in eventControls"
                       >
                         <v-icon
-                            :color="eventControl.color(event)"
+                            :color="eventControl.color ? eventControl.color(event) : 'gray'"
+                            :disabled="eventControl.disabled && eventControl.disabled(event)"
                             :size="headerHeight - 2"
                             @click="eventControl.handler(event)"
                             v-text="eventControl.icon(event)"
@@ -246,7 +247,7 @@
 					},
 					{
 						icon: () => 'mdi-close',
-						color: () => 'gray',
+						disabled: (event) => event.locked,
 						handler: (event) => {
 							this.notifyRemoveClicked(event)
 						}
