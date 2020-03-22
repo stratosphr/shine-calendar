@@ -33,7 +33,7 @@
                   position: 'absolute',
                   left: 0,
                   right: 0,
-                  zIndex: dragging ? 0 : 1,
+                  zIndex: (dragging || resizing.status) ? 0 : 1,
                   borderLeft: 'solid white thin',
                   borderRight: 'solid white thin',
                   ...geometry(event)
@@ -42,6 +42,19 @@
                 v-for="event in optimizedEvents[day.date]"
             >
               <div class="fill-height">
+                <!-- RESIZER -->
+                <div
+                    :style="{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: `${(intervalHeight - intervalHeight / 1.5) / 2}px`,
+                      cursor: 'row-resize'
+                    }"
+                    @mousedown="notifyResizeStart(event, 'top')"
+                    v-if="resizableEvents"
+                />
                 <!-- HEADER -->
                 <div
                     :style="{
@@ -70,6 +83,19 @@
                       v-bind:event="event"
                   />
                 </div>
+                <!-- RESIZER -->
+                <div
+                    :style="{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: `${(intervalHeight - intervalHeight / 1.5) / 2}px`,
+                      cursor: 'row-resize'
+                    }"
+                    @mousedown="notifyResizeStart(event, 'bottom')"
+                    v-if="resizableEvents"
+                />
               </div>
             </div>
           </div>
@@ -82,7 +108,7 @@
             	    right: 0,
             	    top: `${(interval - 1) * intervalHeight}px`,
             	    height: `${intervalHeight}px`,
-            	    cursor: `${dragging ? 'grabbing' : 'default'}`,
+            	    cursor: `${dragging ? 'grabbing' : resizing.status ? 'row-resize' : 'default'}`,
                 }"
               @mouseenter="notifyDropEntered(moment(day.date), interval - 1)"
               @mouseup="notifyDrop(moment(day.date), interval - 1)"
@@ -132,11 +158,19 @@
 			intervalCount: 24,
 			intervalHeight: 30,
 			dragging: false,
+			resizing: {
+				status: false,
+				handler: null
+			},
 			selectedEvents: []
 		}),
 
 		props: {
 			draggableEvents: {
+				type: Boolean,
+				default: true
+			},
+			resizableEvents: {
 				type: Boolean,
 				default: true
 			},
@@ -189,19 +223,38 @@
 			notifyDragCancel() {
 				this.dragging = false
 			},
+			notifyResizeStart(event, handler) {
+				this.resizing = {
+					status: true,
+					handler
+				}
+				this.addSelectedEvent(event)
+			},
 			notifyDropEntered(date, interval) {
-				if (this.dragging) {
+				if (this.dragging || this.resizing.status) {
+					let start, end
 					const time = moment.duration({minutes: interval * this.intervalMinutes + this.firstInterval * this.intervalMinutes})
-					const duration = moment.duration(this.selectedEvents[0].end.diff(this.selectedEvents[0].start))
-					this.selectedEvents[0].start = moment(date).add(time)
-					this.selectedEvents[0].end = moment(this.selectedEvents[0].start).add(duration)
+					if (this.dragging) {
+						start = moment(date).add(time)
+						end = moment(start).add(moment.duration(this.selectedEvents[0].end.diff(this.selectedEvents[0].start)))
+					} else if (this.resizing.status) {
+						start = this.resizing.handler === 'top' ? moment(this.selectedEvents[0].start.format('YYYY-MM-DD')).add(time) : moment(this.selectedEvents[0].start)
+						end = this.resizing.handler === 'bottom' ? moment(date).add(time).add({minutes: this.intervalMinutes}) : moment(this.selectedEvents[0].end)
+					}
+					if (end.isAfter(start)) {
+						this.selectedEvents[0].start = start
+						this.selectedEvents[0].end = end
+					}
 				}
 			},
 			notifyDrop(date, interval) {
 				if (this.dragging) {
 					this.dragging = false
-					this.selectedEvents = []
+				} else if (this.resizing.status) {
+					this.resizing.status = false
+					this.resizing.handler = null
 				}
+				this.selectedEvents = []
 			},
 			addSelectedEvent(event) {
 				this.selectedEvents = [...this.selectedEvents.filter(e => !moment.range(e.start, e.end).isSame(moment.range(event.start, event.end))), event]

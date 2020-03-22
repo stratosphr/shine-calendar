@@ -1,10 +1,14 @@
 <template>
-  <s-calendar :events="events">
+  <s-calendar
+      :events="events"
+      :resizable-events="true"
+  >
     <template #event.header="{event, date}">
       <div
           :class="[`${event.color}`, 'px-1', 'lighten-1']"
           :style="{
-      	    borderRadius: '4px'
+      	    borderTopLeftRadius: '4px',
+      	    borderTopRightRadius: '4px'
           }"
       >
         {{`${event.color} ${date.format('YYYY-MM-DD')}`}}
@@ -14,7 +18,8 @@
       <div
           :class="[event.color, 'px-1', 'lighten-3']"
           :style="{
-      	    borderRadius: '4px'
+      	    borderBottomLeftRadius: '4px',
+      	    borderBottomRightRadius: '4px'
           }"
       >
         <div>
