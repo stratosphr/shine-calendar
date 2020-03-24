@@ -106,6 +106,7 @@
                         <v-col
                             :key="eventIndex"
                             v-for="(eventControl, eventIndex) in eventControls"
+                            class="pl-1"
                         >
                           <v-icon
                               :color="eventControl.color ? eventControl.color(event) : 'gray'"
@@ -235,6 +236,10 @@
 				type: Number,
 				default: 0.4
 			},
+			customEventControls: {
+				type: Array,
+				default: []
+			},
 			firstEvents: {
 				type: Array,
 				default: () => ([])
@@ -273,6 +278,7 @@
 			},
 			eventControls() {
 				return [
+					...this.customEventControls,
 					{
 						icon: (event) => event.locked ? 'mdi-lock' : 'mdi-lock-open',
 						color: (event) => event.locked ? 'error' : 'success',

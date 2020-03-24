@@ -1,5 +1,14 @@
 <template>
   <s-calendar
+      :custom-event-controls="[
+      		{
+      			icon: () => 'mdi-square',
+      			color: (event) => `${event.color} darken-3`,
+      			handler: (event) => {
+      				this.notifyColorClicked(event)
+      			}
+      		}
+      ]"
       :draggable-events="true"
       :first-events="events"
       :ghosts-opacity="0.5"
@@ -93,7 +102,14 @@
 					locked: true
 				}
 			]
-		})
+		}),
+
+		methods: {
+			notifyColorClicked(event) {
+				console.log(event.color)
+			}
+		}
+
 	}
 </script>
 
