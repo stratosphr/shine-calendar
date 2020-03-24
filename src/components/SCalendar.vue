@@ -94,11 +94,11 @@
                     />
                     <div
                         :style="{
-                        position: 'absolute',
-                        right: 0,
-                        bottom: headerHeight < 18 ? (headerHeight < 13 ? (headerHeight < 10 ? '6px' : '4px') : '2px') : 0,
-                        cursor: 'default'
-                      }"
+                          position: 'absolute',
+                          right: 0,
+                          bottom: headerHeight < 18 ? (headerHeight < 13 ? (headerHeight < 10 ? '6px' : '4px') : '2px') : 0,
+                          cursor: 'default'
+                        }"
                         @mousedown.stop
                     >
                       <v-row no-gutters>
