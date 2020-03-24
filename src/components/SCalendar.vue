@@ -345,6 +345,7 @@
 					if (this.dropAllowed) {
 						this.events = this.cloneAll([...this.ghosts, this.ghost])
 					}
+					this.dropAllowed = true
 				}
 			},
 			moment(stringMoment) {
