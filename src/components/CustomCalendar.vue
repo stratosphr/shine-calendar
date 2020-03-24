@@ -81,7 +81,7 @@
 					color: 'red'
 				},
 				{
-					start: moment('2020-03-26 00:30'),
+					start: moment('2020-03-26 01:30'),
 					end: moment('2020-03-26 13:30'),
 					color: 'indigo',
 					locked: true
