@@ -100,6 +100,7 @@
                           cursor: 'default'
                         }"
                         @mousedown.stop
+                        v-if="!shouldDisplayGhosts"
                     >
                       <v-row no-gutters>
                         <v-col
