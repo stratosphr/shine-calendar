@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-sheet
-        @mouseleave="notifyDragCancel()"
         height="500"
         style="user-select: none"
     >
@@ -305,9 +304,6 @@
 					this.ghosts = this.cloneAll(this.events.filter(ghost => !moment.range(ghost.start, ghost.end).isSame(moment.range(this.ghost.start, this.ghost.end))))
 					this.tmpGhosts = this.cloneAll(this.events.filter(ghost => !moment.range(ghost.start, ghost.end).isSame(moment.range(this.ghost.start, this.ghost.end))))
 				}
-			},
-			notifyDragCancel() {
-				this.dragging = false
 			},
 			notifyResizeStart(event, handler) {
 				this.resizing = {
