@@ -336,7 +336,7 @@
 						end = moment(start).add(moment.duration(this.ghost.end.diff(this.ghost.start)))
 					} else if (this.resizing.status) {
 						start = this.resizing.handler === 'top' ? moment(this.ghost.start.format('YYYY-MM-DD')).add(time) : moment(this.ghost.start)
-						end = this.resizing.handler === 'bottom' ? moment(date).add(time).add({minutes: this.intervalMinutes}) : moment(this.ghost.end)
+						end = this.resizing.handler === 'bottom' ? moment(this.ghost.start.format('YYYY-MM-DD')).add(time).add({minutes: this.intervalMinutes}) : moment(this.ghost.end)
 					}
 					if (end.isAfter(start)) {
 						this.dropAllowed = true
