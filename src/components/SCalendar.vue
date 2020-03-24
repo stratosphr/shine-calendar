@@ -27,7 +27,7 @@
               style="position: relative"
               v-if="$refs.calendar"
           >
-            <!-- EVENTS -->
+            <!-- EVENTS / GHOSTS -->
             <div
                 :style="{
                   position: 'absolute',
@@ -188,7 +188,9 @@
 				handler: null
 			},
 			events: [],
-			selectedEvents: []
+			ghost: null,
+			ghosts: [],
+			tmpGhosts: []
 		}),
 
 		props: {
@@ -239,7 +241,7 @@
 				}))
 			},
 			optimizedEvents() {
-				return this.events.reduce((object, event) => ({
+				return (this.shouldDisplayGhosts ? [...this.ghosts, this.ghost] : this.events).reduce((object, event) => ({
 					...object,
 					[event.start.format('YYYY-MM-DD')]: [...(object[event.start.format('YYYY-MM-DD')] || []), event]
 				}), {})
@@ -279,7 +281,9 @@
 			notifyDragStart(event) {
 				if (this.draggableEvents && !event.locked) {
 					this.dragging = true
-					this.addSelectedEvent(event)
+					this.ghost = this.clone(event)
+					this.ghosts = this.cloneAll(this.events.filter(ghost => !moment.range(ghost.start, ghost.end).isSame(moment.range(this.ghost.start, this.ghost.end))))
+					this.tmpGhosts = this.cloneAll(this.events.filter(ghost => !moment.range(ghost.start, ghost.end).isSame(moment.range(this.ghost.start, this.ghost.end))))
 				}
 			},
 			notifyDragCancel() {
@@ -290,16 +294,17 @@
 					status: true,
 					handler
 				}
-				this.addSelectedEvent(event)
+				this.ghost = this.clone(event)
+				this.ghosts = this.cloneAll(this.events.filter(ghost => !moment.range(ghost.start, ghost.end).isSame(moment.range(this.ghost.start, this.ghost.end))))
+				this.tmpGhosts = this.cloneAll(this.events.filter(ghost => !moment.range(ghost.start, ghost.end).isSame(moment.range(this.ghost.start, this.ghost.end))))
 			},
 			notifyLockClicked(event) {
 				this.$set(event, 'locked', !event.locked)
 			},
 			notifyRemoveClicked(event) {
 				if (!event.locked) {
-					this.events = this.cloneEvents(this.events.filter(e => !moment.range(e.start, e.end).isSame(event)))
+					this.events = this.cloneAll(this.events.filter(e => !moment.range(e.start, e.end).isSame(event)))
 				}
-				this.selectedEvents = []
 			},
 			notifyDropEntered(date, interval) {
 				if (this.shouldDisplayGhosts) {
@@ -307,38 +312,44 @@
 					const time = moment.duration({minutes: interval * this.intervalMinutes + this.firstInterval * this.intervalMinutes})
 					if (this.dragging) {
 						start = moment(date).add(time)
-						end = moment(start).add(moment.duration(this.selectedEvents[0].end.diff(this.selectedEvents[0].start)))
+						end = moment(start).add(moment.duration(this.ghost.end.diff(this.ghost.start)))
 					} else if (this.resizing.status) {
-						start = this.resizing.handler === 'top' ? moment(this.selectedEvents[0].start.format('YYYY-MM-DD')).add(time) : moment(this.selectedEvents[0].start)
-						end = this.resizing.handler === 'bottom' ? moment(date).add(time).add({minutes: this.intervalMinutes}) : moment(this.selectedEvents[0].end)
+						start = this.resizing.handler === 'top' ? moment(this.ghost.start.format('YYYY-MM-DD')).add(time) : moment(this.ghost.start)
+						end = this.resizing.handler === 'bottom' ? moment(date).add(time).add({minutes: this.intervalMinutes}) : moment(this.ghost.end)
 					}
 					if (end.isAfter(start)) {
-						this.selectedEvents[0].start = start
-						this.selectedEvents[0].end = end
+						this.ghost = {
+							...this.ghost,
+							start,
+							end
+						}
+						this.ghosts = this.cloneAll(this.tmpGhosts)
 					}
 				}
 			},
 			notifyDrop() {
-				if (this.dragging) {
+				if (this.shouldDisplayGhosts) {
 					this.dragging = false
-				} else if (this.resizing.status) {
 					this.resizing.status = false
 					this.resizing.handler = null
+					this.events = this.cloneAll([...this.ghosts, this.ghost])
 				}
-				this.selectedEvents = []
-			},
-			addSelectedEvent(event) {
-				this.selectedEvents = [...this.selectedEvents.filter(e => !moment.range(e.start, e.end).isSame(moment.range(event.start, event.end))), event]
 			},
 			moment(stringMoment) {
 				return moment(stringMoment)
 			},
-			cloneEvents(events) {
-				return events.map(event => ({
+			clone(event) {
+				return {
 					...event,
 					start: moment(event.start),
 					end: moment(event.end)
-				}))
+				}
+			},
+			cloneAll(events) {
+				return events.map(event => this.clone(event))
+			},
+			print(event) {
+				console.log(event.start.format('YYYY-MM-DD HH:mm'), event.end.format('YYYY-MM-DD HH:mm'), moment.range(event.start, event.end).duration('minutes'))
 			}
 		}
 
