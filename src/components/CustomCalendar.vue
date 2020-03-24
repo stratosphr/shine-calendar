@@ -2,9 +2,9 @@
   <s-calendar
       :draggable-events="true"
       :first-events="events"
+      :ghosts-opacity="0.5"
       :removable-events="true"
       :resizable-events="true"
-      :ghosts-opacity="0.5"
   >
     <template #event.header="{event, date}">
       <div

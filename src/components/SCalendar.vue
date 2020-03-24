@@ -128,13 +128,13 @@
           <!-- DROPS -->
           <div
               :style="{
-            	    position: 'absolute',
-            	    left: 0,
-            	    right: 0,
-            	    top: `${(interval - 1) * intervalHeight}px`,
-            	    height: `${intervalHeight}px`,
-            	    cursor: `${dragging ? 'grabbing' : resizing.status ? 'row-resize' : 'default'}`,
-                }"
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: `${(interval - 1) * intervalHeight}px`,
+                height: `${intervalHeight}px`,
+                cursor: `${dragging ? 'grabbing' : resizing.status ? 'row-resize' : 'default'}`,
+              }"
               @mouseenter="notifyDropEntered(moment(day.date), interval - 1)"
               @mouseup="notifyDrop(moment(day.date), interval - 1)"
               v-for="interval in intervalCount"
