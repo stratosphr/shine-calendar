@@ -42,6 +42,25 @@
                 class="overflow-hidden"
                 v-for="event in optimizedEvents[day.date]"
             >
+              <v-overlay
+                  :value="(ghost && ghost.start.format('YYYY-MM-DD') === day.date) && !dropAllowed"
+                  absolute
+                  color="error"
+              >
+                <v-expand-transition appear>
+                  <v-row
+                      align="center"
+                      justify="center"
+                  >
+                    <v-col cols="12">
+                      <v-icon
+                          color="error"
+                          v-text="'mdi-lock'"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-expand-transition>
+              </v-overlay>
               <div class="fill-height">
                 <!-- RESIZER -->
                 <div
