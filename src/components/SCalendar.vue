@@ -28,8 +28,8 @@
           >
             <!-- EVENTS / GHOSTS -->
             <v-fade-transition
-                appear
                 :key="eventIndex"
+                appear
                 v-for="(event, eventIndex) in optimizedEvents[day.date]"
             >
               <div
