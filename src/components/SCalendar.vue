@@ -190,7 +190,8 @@
 			events: [],
 			ghost: null,
 			ghosts: [],
-			tmpGhosts: []
+			tmpGhosts: [],
+			dropAllowed: true
 		}),
 
 		props: {
@@ -318,21 +319,32 @@
 						end = this.resizing.handler === 'bottom' ? moment(date).add(time).add({minutes: this.intervalMinutes}) : moment(this.ghost.end)
 					}
 					if (end.isAfter(start)) {
+						this.dropAllowed = true
+						this.ghosts = this.cloneAll(this.tmpGhosts)
 						this.ghost = {
 							...this.ghost,
 							start,
 							end
 						}
-						this.ghosts = this.cloneAll(this.tmpGhosts)
+						this.schedule()
 					}
 				}
+			},
+			schedule() {
+				this.tmpGhosts.forEach(ghost => {
+					if (moment.range(this.ghost.start, this.ghost.end).overlaps(moment.range(ghost.start, ghost.end))) {
+						this.dropAllowed = false
+					}
+				})
 			},
 			notifyDrop() {
 				if (this.shouldDisplayGhosts) {
 					this.dragging = false
 					this.resizing.status = false
 					this.resizing.handler = null
-					this.events = this.cloneAll([...this.ghosts, this.ghost])
+					if (this.dropAllowed) {
+						this.events = this.cloneAll([...this.ghosts, this.ghost])
+					}
 				}
 			},
 			moment(stringMoment) {
