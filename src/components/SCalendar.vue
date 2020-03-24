@@ -350,8 +350,8 @@
 				}
 			},
 			schedule() {
-				this.tmpGhosts.forEach(ghost => {
-					if (moment.range(this.ghost.start, this.ghost.end).overlaps(moment.range(ghost.start, ghost.end))) {
+				this.tmpGhosts.forEach(tmpGhost => {
+					if (moment.range(this.ghost.start, this.ghost.end).overlaps(moment.range(tmpGhost.start, tmpGhost.end))) {
 						this.dropAllowed = false
 					}
 				})
