@@ -27,8 +27,13 @@
               v-if="$refs.calendar"
           >
             <!-- EVENTS / GHOSTS -->
-            <div
-                :style="{
+            <v-fade-transition
+                appear
+                :key="eventIndex"
+                v-for="(event, eventIndex) in optimizedEvents[day.date]"
+            >
+              <div
+                  :style="{
                   position: 'absolute',
                   left: 0,
                   right: 0,
@@ -38,32 +43,31 @@
                   opacity: shouldDisplayGhosts ? ghostsOpacity : 1,
                   ...geometry(event)
                 }"
-                class="overflow-hidden"
-                v-for="event in optimizedEvents[day.date]"
-            >
-              <v-overlay
-                  :value="(ghost && ghost.start.format('YYYY-MM-DD') === day.date) && !dropAllowed"
-                  absolute
-                  color="error"
+                  class="overflow-hidden"
               >
-                <v-expand-transition appear>
-                  <v-row
-                      align="center"
-                      justify="center"
-                  >
-                    <v-col cols="12">
-                      <v-icon
-                          color="error"
-                          v-text="'mdi-lock'"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-expand-transition>
-              </v-overlay>
-              <div class="fill-height">
-                <!-- RESIZER -->
-                <div
-                    :style="{
+                <v-overlay
+                    :value="(ghost && ghost.start.format('YYYY-MM-DD') === day.date) && !dropAllowed"
+                    absolute
+                    color="error"
+                >
+                  <v-expand-transition appear>
+                    <v-row
+                        align="center"
+                        justify="center"
+                    >
+                      <v-col cols="12">
+                        <v-icon
+                            color="error"
+                            v-text="'mdi-lock'"
+                        />
+                      </v-col>
+                    </v-row>
+                  </v-expand-transition>
+                </v-overlay>
+                <div class="fill-height">
+                  <!-- RESIZER -->
+                  <div
+                      :style="{
                       position: 'absolute',
                       top: 0,
                       left: 0,
@@ -71,64 +75,64 @@
                       height: `${resizerHeight}px`,
                       cursor: 'row-resize'
                     }"
-                    @mousedown="notifyResizeStart(event, 'top')"
-                    v-if="resizableEvents && !event.locked"
-                />
-                <!-- HEADER -->
-                <div
-                    :style="{
+                      @mousedown="notifyResizeStart(event, 'top')"
+                      v-if="resizableEvents && !event.locked"
+                  />
+                  <!-- HEADER -->
+                  <div
+                      :style="{
                       height: `${headerHeight}px`,
                       cursor: `${draggableEvents ? (dragging ? 'grabbing' : (event.locked ? 'not-allowed' : 'grab')) : 'default'}`
                     }"
-                    @mousedown="notifyDragStart(event)"
-                    class="overflow-hidden s-calendar-event-header"
-                >
-                  <slot
-                      name="event.header"
-                      v-bind:date="moment(day.date)"
-                      v-bind:event="event"
-                  />
-                  <div
-                      :style="{
+                      @mousedown="notifyDragStart(event)"
+                      class="overflow-hidden s-calendar-event-header"
+                  >
+                    <slot
+                        name="event.header"
+                        v-bind:date="moment(day.date)"
+                        v-bind:event="event"
+                    />
+                    <div
+                        :style="{
                         position: 'absolute',
                         right: 0,
                         bottom: headerHeight < 18 ? (headerHeight < 13 ? (headerHeight < 10 ? '6px' : '4px') : '2px') : 0,
                         cursor: 'default'
                       }"
-                      @mousedown.stop
-                  >
-                    <v-row no-gutters>
-                      <v-col
-                          :key="eventIndex"
-                          v-for="(eventControl, eventIndex) in eventControls"
-                      >
-                        <v-icon
-                            :color="eventControl.color ? eventControl.color(event) : 'gray'"
-                            :disabled="eventControl.disabled && eventControl.disabled(event)"
-                            :size="headerHeight - 2"
-                            @click="eventControl.handler(event)"
-                            v-text="eventControl.icon(event)"
-                        />
-                      </v-col>
-                    </v-row>
+                        @mousedown.stop
+                    >
+                      <v-row no-gutters>
+                        <v-col
+                            :key="eventIndex"
+                            v-for="(eventControl, eventIndex) in eventControls"
+                        >
+                          <v-icon
+                              :color="eventControl.color ? eventControl.color(event) : 'gray'"
+                              :disabled="eventControl.disabled && eventControl.disabled(event)"
+                              :size="headerHeight - 2"
+                              @click="eventControl.handler(event)"
+                              v-text="eventControl.icon(event)"
+                          />
+                        </v-col>
+                      </v-row>
+                    </div>
                   </div>
-                </div>
-                <!-- BODY -->
-                <div
-                    :style="{
+                  <!-- BODY -->
+                  <div
+                      :style="{
                 	    height: `${geometry(event).height.replace('px', '') - headerHeight}px`
                     }"
-                    class="s-calendar-event-body"
-                >
-                  <slot
-                      name="event.body"
-                      v-bind:date="moment(day.date)"
-                      v-bind:event="event"
-                  />
-                </div>
-                <!-- RESIZER -->
-                <div
-                    :style="{
+                      class="s-calendar-event-body"
+                  >
+                    <slot
+                        name="event.body"
+                        v-bind:date="moment(day.date)"
+                        v-bind:event="event"
+                    />
+                  </div>
+                  <!-- RESIZER -->
+                  <div
+                      :style="{
                       position: 'absolute',
                       bottom: 0,
                       left: 0,
@@ -136,11 +140,12 @@
                       height: `${resizerHeight}px`,
                       cursor: 'row-resize'
                     }"
-                    @mousedown="notifyResizeStart(event, 'bottom')"
-                    v-if="resizableEvents && !event.locked"
-                />
+                      @mousedown="notifyResizeStart(event, 'bottom')"
+                      v-if="resizableEvents && !event.locked"
+                  />
+                </div>
               </div>
-            </div>
+            </v-fade-transition>
           </div>
 
           <!-- DROPS -->
