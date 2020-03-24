@@ -36,7 +36,7 @@
                   zIndex: shouldDisplayGhosts ? 0 : 1,
                   borderLeft: 'solid white thin',
                   borderRight: 'solid white thin',
-                  opacity: shouldDisplayGhosts ? ghostsOpacity : 1,
+                  opacity: (shouldDisplayGhosts && event !== ghost) ? ghostsOpacity : 1,
                   ...geometry(event)
                 }"
                 class="overflow-hidden"
