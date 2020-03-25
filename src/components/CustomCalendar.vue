@@ -1,13 +1,7 @@
 <template>
   <s-calendar
       :custom-event-controls="[
-      		{
-      			icon: () => 'mdi-square',
-      			color: (event) => `${event.color} darken-3`,
-      			handler: (event) => {
-      				this.notifyColorClicked(event)
-      			}
-      		}
+
       ]"
       :draggable-events="true"
       :first-events="events"
@@ -71,7 +65,7 @@
 			events: [
 				{
 					start: moment('2020-03-23 01:30'),
-					end: moment('2020-03-23 03:15'),
+					end: moment('2020-03-23 03:30'),
 					color: 'green'
 				},
 				{
@@ -83,6 +77,21 @@
 					start: moment('2020-03-24 04:00'),
 					end: moment('2020-03-24 05:00'),
 					color: 'orange'
+				},
+				{
+					start: moment('2020-03-24 07:00'),
+					end: moment('2020-03-24 08:00'),
+					color: 'purple'
+				},
+				{
+					start: moment('2020-03-24 08:00'),
+					end: moment('2020-03-24 09:00'),
+					color: 'teal'
+				},
+				{
+					start: moment('2020-03-24 09:30'),
+					end: moment('2020-03-24 11:00'),
+					color: 'blue-grey'
 				},
 				{
 					start: moment('2020-03-25 03:30'),
