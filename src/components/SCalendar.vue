@@ -419,8 +419,12 @@
 				if (afterRange.overlaps(beforeRange) || after.start.isBefore(before.start)) {
 					const diff = moment.duration(before.end.diff(after.start))
 					const ghost = this.ghosts.find(ghost => moment.range(ghost.start, ghost.end).isSame(beforeRange))
-					ghost.start.subtract(diff)
-					ghost.end.subtract(diff)
+					if (ghost.locked) {
+						this.dropAllowed = false
+					} else {
+						ghost.start.subtract(diff)
+						ghost.end.subtract(diff)
+					}
 					if (remaining.length) {
 						this._scheduleBefore(ghost, remaining.shift(), remaining)
 					}
@@ -433,8 +437,12 @@
 				if (before.end.isAfter(after.start)) {
 					const diff = moment.duration(before.end.diff(after.start))
 					const ghost = this.ghosts.find(ghost => moment.range(ghost.start, ghost.end).isSame(afterRange))
-					ghost.start.add(diff)
-					ghost.end.add(diff)
+					if (ghost.locked) {
+						this.dropAllowed = false
+					} else {
+						ghost.start.add(diff)
+						ghost.end.add(diff)
+					}
 					if (remaining.length) {
 						this._scheduleAfter(ghost, remaining.shift(), remaining)
 					}
