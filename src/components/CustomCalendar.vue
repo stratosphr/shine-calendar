@@ -65,7 +65,7 @@
 			events: [
 				{
 					start: moment('2020-03-23 01:30'),
-					end: moment('2020-03-23 03:30'),
+					end: moment('2020-03-23 04:30'),
 					color: 'green'
 				},
 				{
@@ -74,29 +74,34 @@
 					color: 'blue'
 				},
 				{
-					start: moment('2020-03-24 04:00'),
-					end: moment('2020-03-24 05:00'),
-					color: 'orange'
-				},
-				{
-					start: moment('2020-03-24 07:00'),
-					end: moment('2020-03-24 08:00'),
-					color: 'purple'
-				},
-				{
-					start: moment('2020-03-24 08:00'),
-					end: moment('2020-03-24 09:00'),
+					start: moment('2020-03-24 08:30'),
+					end: moment('2020-03-24 09:30'),
 					color: 'teal'
 				},
 				{
+					start: moment('2020-03-24 07:30'),
+					end: moment('2020-03-24 08:30'),
+					color: 'purple'
+				},
+				{
 					start: moment('2020-03-24 09:30'),
-					end: moment('2020-03-24 11:00'),
+					end: moment('2020-03-24 10:30'),
 					color: 'blue-grey'
+				},
+				{
+					start: moment('2020-03-24 03:30'),
+					end: moment('2020-03-24 04:30'),
+					color: 'orange'
 				},
 				{
 					start: moment('2020-03-25 03:30'),
 					end: moment('2020-03-25 05:00'),
 					color: 'red'
+				},
+				{
+					start: moment('2020-03-24 04:30'),
+					end: moment('2020-03-24 07:30'),
+					color: 'cyan'
 				},
 				{
 					start: moment('2020-03-26 01:30'),

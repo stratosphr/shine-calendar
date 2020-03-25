@@ -155,19 +155,32 @@
           </div>
 
           <!-- DROPS -->
-          <div
-              :style="{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                top: `${(interval - 1) * intervalHeight}px`,
-                height: `${intervalHeight}px`,
-                cursor: `${dragging ? 'grabbing' : resizing.status ? 'row-resize' : 'default'}`,
-              }"
-              @mouseenter="notifyDropEntered(moment(day.date), interval - 1)"
-              @mouseup="notifyDrop(moment(day.date), interval - 1)"
-              v-for="interval in intervalCount"
-          />
+          <div v-for="interval in intervalCount">
+            <div
+                :style="{
+                  position: 'absolute',
+                  left: '1px',
+                  width: '50%',
+                  top: `${(interval - 1) * intervalHeight}px`,
+                  height: `${intervalHeight}px`,
+                  cursor: `${dragging ? 'grabbing' : resizing.status ? 'row-resize' : 'default'}`
+                }"
+                @mouseenter="notifyDropEntered(moment(day.date), interval - 1, 'left')"
+                @mouseup="notifyDrop(moment(day.date), interval - 1, 'left')"
+            />
+            <div
+                :style="{
+                  position: 'absolute',
+                  right: '1px',
+                  width: '50%',
+                  top: `${(interval - 1) * intervalHeight}px`,
+                  height: `${intervalHeight}px`,
+                  cursor: `${dragging ? 'grabbing' : resizing.status ? 'row-resize' : 'default'}`
+                }"
+                @mouseenter="notifyDropEntered(moment(day.date), interval - 1, 'right')"
+                @mouseup="notifyDrop(moment(day.date), interval - 1, 'right')"
+            />
+          </div>
         </template>
       </v-calendar>
     </v-sheet>
@@ -342,7 +355,7 @@
 					this.events = this.cloneAll(this.events.filter(e => !moment.range(e.start, e.end).isSame(event)))
 				}
 			},
-			notifyDropEntered(date, interval) {
+			notifyDropEntered(date, interval, slot) {
 				if (this.shouldDisplayGhosts) {
 					let start, end
 					const time = moment.duration({minutes: interval * this.intervalMinutes + this.firstInterval * this.intervalMinutes})
@@ -361,16 +374,72 @@
 							start,
 							end
 						}
-						this.schedule()
+						this.schedule(slot)
 					}
 				}
 			},
-			schedule() {
-				this.tmpGhosts.forEach(tmpGhost => {
-					if (moment.range(this.ghost.start, this.ghost.end).overlaps(moment.range(tmpGhost.start, tmpGhost.end))) {
-						this.dropAllowed = false
+			schedule(slot) {
+				const before = []
+				const after = []
+				// Gathering tmpGhosts before, same or after and overlapping before, same or after the ghost
+				this.tmpGhosts.filter(tmpGhost => tmpGhost.start.isSame(this.ghost.start, 'day')).forEach(tmpGhost => {
+					if (tmpGhost.start.isBefore(this.ghost.start)) {
+						before.push(tmpGhost)
+					} else if (tmpGhost.start.isSame(this.ghost.start)) {
+						if (slot === 'left') {
+							before.push(tmpGhost)
+						} else {
+							after.push(tmpGhost)
+						}
+					} else {
+						after.push(tmpGhost)
 					}
 				})
+				// Sorting gathered tmpGhosts
+				before.sort((first, second) => {
+					return first.start.isBefore(second.start) ? 1 : first.start.isSame(second.start) ? 0 : -1
+				})
+				after.sort((first, second) => {
+					return first.start.isAfter(second.start) ? 1 : first.start.isSame(second.start) ? 0 : -1
+				})
+				// Scheduling
+				if (before.length) {
+					const previous = before.shift()
+					this.print(previous)
+					this._scheduleBefore(this.ghost, previous, before)
+				}
+				if (after.length) {
+					const next = after.shift()
+					this._scheduleAfter(this.ghost, next, after)
+				}
+			},
+			_scheduleBefore(after, before, remaining) {
+				const afterRange = moment.range(after.start, after.end)
+				const beforeRange = moment.range(before.start, before.end)
+				if (afterRange.overlaps(beforeRange) || after.start.isBefore(before.start)) {
+					const diff = moment.duration(before.end.diff(after.start))
+					console.log(diff)
+					const ghost = this.ghosts.find(ghost => moment.range(ghost.start, ghost.end).isSame(beforeRange))
+					ghost.start.subtract(diff)
+					ghost.end.subtract(diff)
+					if (remaining.length) {
+						this._scheduleBefore(ghost, remaining.shift(), remaining)
+					}
+				}
+			},
+			_scheduleAfter(before, after, remaining) {
+				const afterRange = moment.range(after.start, after.end)
+				//const beforeRange = moment.range(before.start, before.end)
+				//if (beforeRange.overlaps(afterRange) || after.start.isBefore(before.start)) {
+				if (before.end.isAfter(after.start)) {
+					const diff = moment.duration(before.end.diff(after.start))
+					const ghost = this.ghosts.find(ghost => moment.range(ghost.start, ghost.end).isSame(afterRange))
+					ghost.start.add(diff)
+					ghost.end.add(diff)
+					if (remaining.length) {
+						this._scheduleAfter(ghost, remaining.shift(), remaining)
+					}
+				}
 			},
 			notifyDrop() {
 				if (this.shouldDisplayGhosts) {
