@@ -418,7 +418,6 @@
 				const beforeRange = moment.range(before.start, before.end)
 				if (afterRange.overlaps(beforeRange) || after.start.isBefore(before.start)) {
 					const diff = moment.duration(before.end.diff(after.start))
-					console.log(diff)
 					const ghost = this.ghosts.find(ghost => moment.range(ghost.start, ghost.end).isSame(beforeRange))
 					ghost.start.subtract(diff)
 					ghost.end.subtract(diff)
