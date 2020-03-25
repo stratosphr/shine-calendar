@@ -76,6 +76,7 @@
                       cursor: 'row-resize'
                     }"
                       @mousedown="notifyResizeStart(event, 'top')"
+                      @touchstart="notifyResizeStart(event, 'top')"
                       v-if="resizableEvents && !event.locked"
                   />
                   <!-- HEADER -->
@@ -85,6 +86,7 @@
                       cursor: `${draggableEvents ? (dragging ? 'grabbing' : (event.locked ? 'not-allowed' : 'grab')) : 'default'}`
                     }"
                       @mousedown="notifyDragStart(event)"
+                      @touchstart="notifyDragStart(event)"
                       class="overflow-hidden s-calendar-event-header"
                   >
                     <slot
@@ -100,13 +102,14 @@
                           cursor: 'default'
                         }"
                         @mousedown.stop
+                        @touchstart.stop
                         v-if="!shouldDisplayGhosts"
                     >
                       <v-row no-gutters>
                         <v-col
                             :key="eventIndex"
-                            v-for="(eventControl, eventIndex) in eventControls"
                             class="pl-1"
+                            v-for="(eventControl, eventIndex) in eventControls"
                         >
                           <v-icon
                               :color="eventControl.color ? eventControl.color(event) : 'gray'"
@@ -143,6 +146,7 @@
                       cursor: 'row-resize'
                     }"
                       @mousedown="notifyResizeStart(event, 'bottom')"
+                      @touchstart="notifyResizeStart(event, 'bottom')"
                       v-if="resizableEvents && !event.locked"
                   />
                 </div>
@@ -249,6 +253,10 @@
 		created() {
 			console.clear()
 			this.events = [...this.firstEvents]
+		},
+
+		mounted() {
+			this.$forceUpdate()
 		},
 
 		computed: {
