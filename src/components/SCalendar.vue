@@ -212,28 +212,6 @@
         </template>
       </v-calendar>
     </v-sheet>
-    <v-row class="mt-10">
-      <v-col>
-        <v-slider
-            :max="60"
-            :min="1"
-            hide-details
-            label="Minutes par interval"
-            thumb-label="always"
-            v-model="intervalMinutes"
-        />
-      </v-col>
-      <v-col>
-        <v-slider
-            :max="60"
-            :min="1"
-            hide-details
-            label="Hauteur des intervals"
-            thumb-label="always"
-            v-model="intervalHeight"
-        />
-      </v-col>
-    </v-row>
   </div>
 </template>
 
