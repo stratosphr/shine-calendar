@@ -8,6 +8,7 @@
       :ghosts-opacity="0.5"
       :removable-events="true"
       :resizable-events="true"
+      color="cyan"
   >
     <template #event.header="{event, date}">
       <div

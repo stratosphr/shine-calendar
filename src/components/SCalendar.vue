@@ -26,6 +26,7 @@
         style="user-select: none"
     >
       <v-calendar
+          :color="color"
           :end="end.format('YYYY-MM-DD')"
           :event-ripple="false"
           :events="eventsContainers"
@@ -266,6 +267,10 @@
 		}),
 
 		props: {
+			color: {
+				type: String,
+				default: undefined
+			},
 			draggableEvents: {
 				type: Boolean,
 				default: true
