@@ -22,7 +22,7 @@
     </v-toolbar>
     <v-sheet
         class="mt-2"
-        height="500"
+        :height="height"
         style="user-select: none"
     >
       <v-calendar
@@ -250,9 +250,6 @@
 		data: () => ({
 			start: moment().startOf('week'),
 			end: moment().endOf('week'),
-			firstInterval: 3,
-			intervalMinutes: 30,
-			intervalCount: 24,
 			intervalHeight: 20,
 			dragging: false,
 			resizing: {
@@ -270,6 +267,22 @@
 			color: {
 				type: String,
 				default: undefined
+			},
+			firstInterval: {
+				type: Number,
+				default: 0
+			},
+			intervalMinutes: {
+				type: Number,
+				default: 60
+			},
+			intervalCount: {
+				type: Number,
+				default: 24
+			},
+			height: {
+				type: Number,
+				default: 500
 			},
 			draggableEvents: {
 				type: Boolean,

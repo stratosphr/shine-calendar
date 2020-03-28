@@ -2,6 +2,10 @@
   <s-calendar
       :custom-event-controls="[
       ]"
+      :first-interval="3"
+      :interval-minutes="30"
+      :interval-count="45"
+      :height="300"
       :draggable-events="true"
       :first-events="events"
       :forbidden-ranges-for-day="forbiddenRangesForDay"
