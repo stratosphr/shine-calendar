@@ -21,8 +21,8 @@
       </v-row>
     </v-toolbar>
     <v-sheet
-        class="mt-2"
         :height="height"
+        class="mt-2"
         style="user-select: none"
     >
       <v-calendar
@@ -35,6 +35,7 @@
           :interval-height="intervalHeight"
           :interval-minutes="intervalMinutes"
           :short-intervals="false"
+          :short-weekdays="false"
           :start="start.format('YYYY-MM-DD')"
           :weekdays="[1, 2, 3, 4, 5, 6]"
           event-color="transparent"
