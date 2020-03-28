@@ -1,10 +1,10 @@
 <template>
   <s-calendar
       :custom-event-controls="[
-
       ]"
       :draggable-events="true"
       :first-events="events"
+      :forbidden-ranges-for-day="forbiddenRangesForDay"
       :ghosts-opacity="0.5"
       :removable-events="true"
       :resizable-events="true"
@@ -121,6 +121,15 @@
 		methods: {
 			notifyColorClicked(event) {
 				console.log(event.color)
+			},
+			forbiddenRangesForDay(day) {
+				return [
+					moment.range(moment(day).add({hours: 12}), moment(day).add({hours: 14})),
+					moment.range(moment(day).add({
+						hours: 2,
+						minutes: 30
+					}), moment(day).add({hours: 3}))
+				]
 			}
 		}
 

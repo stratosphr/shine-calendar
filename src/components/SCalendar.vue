@@ -155,27 +155,33 @@
           </div>
 
           <!-- DROPS -->
-          <div v-for="interval in intervalCount">
+          <div
+              v-for="interval in intervalCount"
+          >
             <div
+                :class="intervalOverlapsForbiddenRange(day.date, interval - 1) ? 'error' : 'white'"
                 :style="{
                   position: 'absolute',
-                  left: '1px',
-                  width: '50%',
+                  left: 0,
+                  width: 'calc(50%)',
                   top: `${(interval - 1) * intervalHeight}px`,
                   height: `${intervalHeight}px`,
-                  cursor: `${dragging ? 'grabbing' : resizing.status ? 'row-resize' : 'default'}`
+                  cursor: `${dragging ? 'grabbing' : resizing.status ? 'row-resize' : 'default'}`,
+                  opacity: 0.2
                 }"
                 @mouseenter="notifyDropEntered(moment(day.date), interval - 1, 'left')"
                 @mouseup="notifyDrop(moment(day.date), interval - 1, 'left')"
             />
             <div
+                :class="intervalOverlapsForbiddenRange(day.date, interval - 1) ? 'error' : 'white'"
                 :style="{
                   position: 'absolute',
-                  right: '1px',
-                  width: '50%',
+                  right: 0,
+                  width: 'calc(50%)',
                   top: `${(interval - 1) * intervalHeight}px`,
                   height: `${intervalHeight}px`,
-                  cursor: `${dragging ? 'grabbing' : resizing.status ? 'row-resize' : 'default'}`
+                  cursor: `${dragging ? 'grabbing' : resizing.status ? 'row-resize' : 'default'}`,
+                  opacity: 0.2
                 }"
                 @mouseenter="notifyDropEntered(moment(day.date), interval - 1, 'right')"
                 @mouseup="notifyDrop(moment(day.date), interval - 1, 'right')"
@@ -257,14 +263,17 @@
 				type: Array,
 				default: []
 			},
+			forbiddenRangesForDay: {
+				type: Function,
+				default: () => []
+			},
 			firstEvents: {
 				type: Array,
-				default: () => ([])
+				default: []
 			}
 		},
 
 		created() {
-			console.clear()
 			this.events = [...this.firstEvents.map((event, index) => ({
 				...event,
 				index: index
@@ -321,6 +330,13 @@
 			},
 			shouldDisplayGhosts() {
 				return this.dragging || this.resizing.status
+			},
+			forbiddenRanges() {
+				return [...moment.range(this.start, this.end).by('day')].map(day => [
+					moment.range(moment(day.format('YYYY-MM-DD 00:00')), moment(day.format('YYYY-MM-DD 00:00')).add({minutes: this.firstInterval * this.intervalMinutes})),
+					moment.range(moment(day.format('YYYY-MM-DD 00:00')).add({minutes: (this.intervalCount + this.firstInterval) * this.intervalMinutes}), moment(day.format('YYYY-MM-DD 24:00'))),
+					...this.forbiddenRangesForDay(day)
+				]).flat()
 			}
 		},
 
@@ -370,14 +386,18 @@
 						end = this.resizing.handler === 'bottom' ? moment(this.ghost.start.format('YYYY-MM-DD')).add(time).add({minutes: this.intervalMinutes}) : moment(this.ghost.end)
 					}
 					if (end.isAfter(start)) {
-						this.dropAllowed = true
 						this.ghosts = this.cloneAll(this.tmpGhosts)
 						this.ghost = {
 							...this.ghost,
 							start,
 							end
 						}
-						this.schedule(slot)
+						if (this.overlapsForbiddenRange(this.ghost)) {
+							this.dropAllowed = false
+						} else {
+							this.dropAllowed = true
+							this.schedule(slot)
+						}
 					}
 				}
 			},
@@ -419,7 +439,10 @@
 				if (after.start.isBefore(before.end)) {
 					const diff = moment.duration(before.end.diff(after.start))
 					const ghost = this.ghosts.find(ghost => ghost.index === before.index)
-					if (ghost.locked) {
+					if (ghost.locked || this.overlapsForbiddenRange({
+						start: moment(ghost.start).subtract(diff),
+						end: moment(ghost.end).subtract(diff)
+					})) {
 						this.dropAllowed = false
 					} else {
 						ghost.start.subtract(diff)
@@ -434,7 +457,10 @@
 				if (before.end.isAfter(after.start)) {
 					const diff = moment.duration(before.end.diff(after.start))
 					const ghost = this.ghosts.find(ghost => ghost.index === after.index)
-					if (ghost.locked) {
+					if (ghost.locked || this.overlapsForbiddenRange({
+						start: moment(ghost.start).add(diff),
+						end: moment(ghost.end).add(diff)
+					})) {
 						this.dropAllowed = false
 					} else {
 						ghost.start.add(diff)
@@ -455,6 +481,16 @@
 					}
 					this.dropAllowed = true
 				}
+			},
+			overlapsForbiddenRange(event) {
+				const eventRange = moment.range(event.start, event.end)
+				return this.forbiddenRanges.some(forbiddenPeriod => eventRange.overlaps(forbiddenPeriod))
+			},
+			intervalOverlapsForbiddenRange(date, interval) {
+				return this.overlapsForbiddenRange({
+					start: moment(date).add(moment.duration({minutes: interval * this.intervalMinutes + this.firstInterval * this.intervalMinutes})),
+					end: moment(date).add(moment.duration({minutes: (interval + 1) * this.intervalMinutes + this.firstInterval * this.intervalMinutes}))
+				}) ? 'red' : ''
 			},
 			moment(stringMoment) {
 				return moment(stringMoment)
