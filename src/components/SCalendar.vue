@@ -265,7 +265,10 @@
 
 		created() {
 			console.clear()
-			this.events = [...this.firstEvents]
+			this.events = [...this.firstEvents.map((event, index) => ({
+				...event,
+				index: index
+			}))]
 		},
 
 		mounted() {
@@ -334,8 +337,8 @@
 				if (this.draggableEvents && !event.locked) {
 					this.dragging = true
 					this.ghost = this.clone(event)
-					this.ghosts = this.cloneAll(this.events.filter(ghost => !moment.range(ghost.start, ghost.end).isSame(moment.range(this.ghost.start, this.ghost.end))))
-					this.tmpGhosts = this.cloneAll(this.events.filter(ghost => !moment.range(ghost.start, ghost.end).isSame(moment.range(this.ghost.start, this.ghost.end))))
+					this.ghosts = this.cloneAll(this.events.filter(ghost => ghost.index !== this.ghost.index))
+					this.tmpGhosts = this.cloneAll(this.events.filter(ghost => ghost.index !== this.ghost.index))
 				}
 			},
 			notifyResizeStart(event, handler) {
@@ -344,8 +347,8 @@
 					handler
 				}
 				this.ghost = this.clone(event)
-				this.ghosts = this.cloneAll(this.events.filter(ghost => !moment.range(ghost.start, ghost.end).isSame(moment.range(this.ghost.start, this.ghost.end))))
-				this.tmpGhosts = this.cloneAll(this.events.filter(ghost => !moment.range(ghost.start, ghost.end).isSame(moment.range(this.ghost.start, this.ghost.end))))
+				this.ghosts = this.cloneAll(this.events.filter(ghost => ghost.index !== this.ghost.index))
+				this.tmpGhosts = this.cloneAll(this.events.filter(ghost => ghost.index !== this.ghost.index))
 			},
 			notifyLockClicked(event) {
 				this.$set(event, 'locked', !event.locked)
@@ -413,11 +416,9 @@
 				}
 			},
 			_scheduleBefore(after, before, remaining) {
-				const afterRange = moment.range(after.start, after.end)
-				const beforeRange = moment.range(before.start, before.end)
-				if (afterRange.overlaps(beforeRange) || after.start.isBefore(before.start)) {
+				if (after.start.isBefore(before.end)) {
 					const diff = moment.duration(before.end.diff(after.start))
-					const ghost = this.ghosts.find(ghost => moment.range(ghost.start, ghost.end).isSame(beforeRange))
+					const ghost = this.ghosts.find(ghost => ghost.index === before.index)
 					if (ghost.locked) {
 						this.dropAllowed = false
 					} else {
@@ -430,12 +431,9 @@
 				}
 			},
 			_scheduleAfter(before, after, remaining) {
-				const afterRange = moment.range(after.start, after.end)
-				//const beforeRange = moment.range(before.start, before.end)
-				//if (beforeRange.overlaps(afterRange) || after.start.isBefore(before.start)) {
 				if (before.end.isAfter(after.start)) {
 					const diff = moment.duration(before.end.diff(after.start))
-					const ghost = this.ghosts.find(ghost => moment.range(ghost.start, ghost.end).isSame(afterRange))
+					const ghost = this.ghosts.find(ghost => ghost.index === after.index)
 					if (ghost.locked) {
 						this.dropAllowed = false
 					} else {
