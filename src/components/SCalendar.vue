@@ -56,15 +56,15 @@
             >
               <div
                   :style="{
-                  position: 'absolute',
-                  left: 0,
-                  right: 0,
-                  zIndex: shouldDisplayGhosts ? 0 : 1,
-                  borderLeft: 'solid white thin',
-                  borderRight: 'solid white thin',
-                  opacity: shouldDisplayGhosts ? ghostsOpacity : 1,
-                  ...geometry(event)
-                }"
+                    position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    zIndex: shouldDisplayGhosts ? 0 : 1,
+                    borderLeft: 'solid white thin',
+                    borderRight: 'solid white thin',
+                    opacity: shouldDisplayGhosts ? ghostsOpacity : 1,
+                    ...geometry(event)
+                  }"
                   class="overflow-hidden"
               >
                 <v-overlay
