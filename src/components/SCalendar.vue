@@ -405,7 +405,6 @@
 				// Scheduling
 				if (before.length) {
 					const previous = before.shift()
-					this.print(previous)
 					this._scheduleBefore(this.ghost, previous, before)
 				}
 				if (after.length) {
