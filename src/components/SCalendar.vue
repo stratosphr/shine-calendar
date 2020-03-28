@@ -1,6 +1,27 @@
 <template>
   <div>
+    <v-toolbar dense>
+      <v-row justify="center">
+        <v-col cols="auto">
+          <v-btn
+              @click="move(-1)"
+              icon
+          >
+            <v-icon v-text="'mdi-chevron-left'" />
+          </v-btn>
+        </v-col>
+        <v-col
+            @click="move(1)"
+            cols="auto"
+        >
+          <v-btn icon>
+            <v-icon v-text="'mdi-chevron-right'" />
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-toolbar>
     <v-sheet
+        class="mt-2"
         height="500"
         style="user-select: none"
     >
@@ -226,6 +247,8 @@
 		name: 'SCalendar',
 
 		data: () => ({
+			start: moment().startOf('week'),
+			end: moment().endOf('week'),
 			firstInterval: 3,
 			intervalMinutes: 30,
 			intervalCount: 24,
@@ -280,17 +303,7 @@
 			}))]
 		},
 
-		mounted() {
-			this.$forceUpdate()
-		},
-
 		computed: {
-			start() {
-				return moment().startOf('week')
-			},
-			end() {
-				return moment().endOf('week')
-			},
 			resizerHeight() {
 				return this.headerHeight / 2.5
 			},
@@ -341,6 +354,10 @@
 		},
 
 		methods: {
+			move(amount) {
+				this.start = moment(this.start).add({week: amount})
+				this.end = moment(this.end).add({week: amount})
+			},
 			geometry(event) {
 				const top = this.$refs.calendar.timeToY(event.start.format('HH:mm')) + 2
 				const height = this.$refs.calendar.timeToY(event.end.format('HH:mm')) - top - 1

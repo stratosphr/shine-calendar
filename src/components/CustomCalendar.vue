@@ -114,6 +114,26 @@
 					end: moment('2020-03-27 09:00'),
 					color: 'grey',
 					locked: true
+				},
+				{
+					start: moment('2020-03-30 02:00'),
+					end: moment('2020-03-30 09:00'),
+					color: 'cyan'
+				},
+				{
+					start: moment('2020-04-03 03:00'),
+					end: moment('2020-04-03 04:00'),
+					color: 'purple'
+				},
+				{
+					start: moment('2020-03-20 04:00'),
+					end: moment('2020-03-20 09:00'),
+					color: 'cyan'
+				},
+				{
+					start: moment('2020-03-21 02:00'),
+					end: moment('2020-03-21 04:00'),
+					color: 'purple'
 				}
 			]
 		}),
