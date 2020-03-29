@@ -1,6 +1,9 @@
 <template>
   <div>
-    <v-toolbar dense>
+    <v-toolbar
+        dense
+        flat
+    >
       <v-row justify="center">
         <v-col cols="auto">
           <v-btn
@@ -22,7 +25,7 @@
     </v-toolbar>
     <v-sheet
         :height="height"
-        class="mt-2"
+        class="mt-2 elevation-3"
         style="user-select: none"
     >
       <v-calendar
