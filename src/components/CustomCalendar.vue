@@ -1,56 +1,131 @@
 <template>
-  <s-calendar
-      :custom-event-controls="[
-      ]"
-      :first-interval="3"
-      :interval-minutes="30"
-      :interval-count="45"
-      :height="300"
-      :draggable-events="true"
-      :first-events="events"
-      :forbidden-ranges-for-day="forbiddenRangesForDay"
-      :ghosts-opacity="0.5"
-      :removable-events="true"
-      :resizable-events="true"
-      color="cyan"
-  >
-    <template #event.header="{event, date}">
-      <div
-          :class="[
-          		`${event.color}`,
-          		'px-1',
-          		'lighten-1',
-          		'font-weight-bold'
-          ]"
-          :style="{
-      	    borderTopLeftRadius: '4px',
-      	    borderTopRightRadius: '4px',
-      	    fontSize: '0.8em'
-          }"
+  <div>
+    <v-container>
+      <s-calendar
+          :custom-event-controls="[]"
+          :draggable-events="true"
+          :first-events="events"
+          :first-interval="3"
+          :forbidden-ranges-for-day="forbiddenRangesForDay"
+          :ghosts-opacity="0.5"
+          :height="500"
+          :interval-count="45"
+          :interval-minutes="30"
+          :removable-events="true"
+          :resizable-events="true"
+          color="cyan"
       >
-        {{`${event.color} ${date.format('YYYY-MM-DD')}`}}
-      </div>
-    </template>
-    <template #event.body="{event, date}">
-      <div
-          :class="[event.color, 'px-1', 'lighten-3']"
-          :style="{
-      	    borderBottomLeftRadius: '4px',
-      	    borderBottomRightRadius: '4px'
-          }"
+        <template #event.header="{event, date}">
+          <div
+              :class="[
+                `${event.color}`,
+                'px-1',
+                'lighten-1',
+                'font-weight-bold'
+              ]"
+              :style="{
+                borderTopLeftRadius: '4px',
+                borderTopRightRadius: '4px',
+                fontSize: '0.8em'
+              }"
+          >
+            {{`${event.color} ${date.format('YYYY-MM-DD')}`}}
+          </div>
+        </template>
+        <template #event.body="{event}">
+          <div
+              :class="[event.color, 'px-1', 'lighten-3']"
+              :style="{
+                borderBottomLeftRadius: '4px',
+                borderBottomRightRadius: '4px'
+              }"
+          >
+            <div>
+              Durée: {{`${moment.duration(event.end.diff(event.start)).hours()}h${moment.duration(event.end.diff(event.start)).minutes() || '00'}`}}
+            </div>
+            <div>
+              {{event.start.format('YYYY-MM-DD HH:mm')}}
+            </div>
+            <div>
+              {{event.end.format('YYYY-MM-DD HH:mm')}}
+            </div>
+          </div>
+        </template>
+      </s-calendar>
+    </v-container>
+
+    <v-container>
+      <v-row
+          class="fill-height elevation-3"
+          no-gutters
       >
-        <div>
-          {{date.format('YYYY-MM-DD')}}
-        </div>
-        <div>
-          {{event.start.format('YYYY-MM-DD HH:mm')}}
-        </div>
-        <div>
-          {{event.end.format('YYYY-MM-DD HH:mm')}}
-        </div>
-      </div>
-    </template>
-  </s-calendar>
+        <v-col cols="auto">
+          <v-tabs
+              center
+              center-active
+              hide-slider
+              icons-and-text
+              v-model="category"
+              vertical
+          >
+            <v-tab
+                :class="`${category.color} lighten-4`"
+                :href="`#tab-${categoryIndex}`"
+                :key="categoryIndex"
+                :ripple="false"
+                v-for="(category, categoryIndex) in categories"
+            >
+              <span :class="`${category.color}--text font-weight-bold`">{{category.text}}</span>
+              <v-icon
+                  :color="category.color"
+                  left
+                  v-text="category.icon"
+              />
+            </v-tab>
+            <v-tab :href="`#tab-${categories.length}`">
+              <span
+                  :class="`font-weight-bold`"
+                  v-text="'Ajouter...'"
+              />
+              <v-icon
+                  left
+                  v-text="'mdi-plus'"
+              />
+            </v-tab>
+          </v-tabs>
+        </v-col>
+
+        <v-col>
+          <v-tabs-items
+              class="fill-height"
+              v-model="category"
+              vertical
+          >
+            <v-tab-item
+                :key="categoryIndex"
+                :value="`tab-${categoryIndex}`"
+                class="fill-height"
+                v-for="(category, categoryIndex) in categories"
+            >
+              <div :class="`${category.color} lighten-4 pa-3 fill-height`">
+                <v-data-table height="200">
+                </v-data-table>
+              </div>
+            </v-tab-item>
+            <v-tab-item
+                :value="`tab-${categories.length}`"
+                class="fill-height"
+            >
+              <div :class="`pa-3 fill-height`">
+                <v-data-table height="200">
+                </v-data-table>
+              </div>
+            </v-tab-item>
+          </v-tabs-items>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script>
@@ -67,6 +142,27 @@
 		components: {SCalendar},
 
 		data: () => ({
+			category: null,
+			categories: [
+				{
+					text: 'C.M',
+					value: 'cm',
+					icon: 'mdi-teach',
+					color: 'cyan'
+				},
+				{
+					text: 'T.D.',
+					value: 'td',
+					icon: 'mdi-pen',
+					color: 'teal'
+				},
+				{
+					text: 'T.P.',
+					value: 'tp',
+					icon: 'mdi-test-tube',
+					color: 'purple'
+				}
+			],
 			events: [
 				{
 					start: moment('2020-03-23 01:30'),
@@ -142,6 +238,12 @@
 				}
 			]
 		}),
+
+		computed: {
+			moment() {
+				return moment
+			}
+		},
 
 		methods: {
 			notifyColorClicked(event) {
