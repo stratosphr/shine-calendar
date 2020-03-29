@@ -300,6 +300,11 @@
 			}))]
 		},
 
+		mounted() {
+			// For phones
+			this.$forceUpdate()
+		},
+
 		computed: {
 			resizerHeight() {
 				return this.headerHeight / 2.5
